@@ -107,3 +107,46 @@ impl Into<Candlestick> for CandlestickResponse {
         }
     }
 }
+
+#[derive(Deserialize)]
+pub struct AssetsResponse {
+    success: u8,
+    data: AssetsData,
+}
+
+#[derive(Deserialize)]
+struct AssetsData {
+    assets: Vec<AssetsInnerData>,
+}
+
+#[derive(Deserialize)]
+struct AssetsInnerData {
+    asset: String,
+    free_amount: String,
+    amount_precision: Number,
+    onhand_amount: String,
+    locked_amount: String,
+    withdrawal_fee: String,
+    stop_deposit: bool,
+    stop_withdrawal: bool,
+}
+
+impl Into<Assets> for AssetsResponse {
+    fn into(self) -> Assets {
+        let data = self.data;
+        let mut values: Vec<AssetsValue> = Vec::with_capacity(data.assets.len());
+        for val in &data.assets {
+            values.push(AssetsValue {
+                asset: "aho".to_string(),
+                free_amount: 0.0,
+                amount_precision: 0,
+                onhand_amount: 0.0,
+                locked_amount: 0.0,
+                withdrawal_fee: 0.0,
+                stop_deposit: false,
+                stop_withdrawal: false,
+            })
+        }
+        Assets { values }
+    }
+}

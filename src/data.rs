@@ -39,3 +39,20 @@ pub struct CandlestickValue {
     pub volume: f64,
     pub timestamp: u64,
 }
+
+#[derive(Debug)]
+pub struct Assets {
+    pub values: Vec<AssetsValue>,
+}
+
+#[derive(Debug)]
+pub struct AssetsValue {
+    pub asset: String,
+    pub free_amount: f64,
+    pub amount_precision: u8,
+    pub onhand_amount: f64,
+    pub locked_amount: f64,
+    pub withdrawal_fee: f64,
+    pub stop_deposit: bool,
+    pub stop_withdrawal: bool,
+}
