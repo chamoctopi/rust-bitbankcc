@@ -1,11 +1,10 @@
-pub fn hello() {
-    println!("from rust bitbankcc!!");
-}
+mod client;
+mod data;
+mod enums;
+// mod private_client;
+mod request;
+mod response;
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+pub use client::*;
+pub use enums::*;
+// pub use private_client::*;
