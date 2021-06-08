@@ -1,7 +1,8 @@
 use super::data::*;
 use super::enums::CandleType;
+use crate::response::AssetsValueWithdrawalFee::{WithdrawalFee, WithdrawalFeeObj};
 use serde::Deserialize;
-use serde_json::Number;
+use serde_json::{Number, Value};
 use std::str::FromStr;
 
 #[derive(Deserialize)]
@@ -123,10 +124,10 @@ struct AssetsData {
 struct AssetsInnerData {
     asset: String,
     free_amount: String,
-    amount_precision: Number,
+    amount_precision: u8,
     onhand_amount: String,
     locked_amount: String,
-    withdrawal_fee: String,
+    withdrawal_fee: Value,
     stop_deposit: bool,
     stop_withdrawal: bool,
 }
@@ -136,15 +137,34 @@ impl Into<Assets> for AssetsResponse {
         let data = self.data;
         let mut values: Vec<AssetsValue> = Vec::with_capacity(data.assets.len());
         for val in &data.assets {
+            let withdrawal_fee = if val.withdrawal_fee.is_object() {
+                let obj = val.withdrawal_fee.as_object().unwrap();
+                AssetsValueWithdrawalFee::WithdrawalFeeObj(WithdrawalFeeObject {
+                    threshold: obj
+                        .get("threshold")
+                        .unwrap()
+                        .as_str()
+                        .unwrap()
+                        .parse()
+                        .unwrap(),
+                    under: obj.get("under").unwrap().as_str().unwrap().parse().unwrap(),
+                    over: obj.get("over").unwrap().as_str().unwrap().parse().unwrap(),
+                })
+            } else {
+                AssetsValueWithdrawalFee::WithdrawalFee(
+                    val.withdrawal_fee.as_str().unwrap().parse().unwrap(),
+                )
+            };
             values.push(AssetsValue {
-                asset: "aho".to_string(),
-                free_amount: 0.0,
-                amount_precision: 0,
-                onhand_amount: 0.0,
-                locked_amount: 0.0,
-                withdrawal_fee: 0.0,
-                stop_deposit: false,
-                stop_withdrawal: false,
+                asset: val.asset.as_str().to_string(),
+                free_amount: val.free_amount.parse().unwrap(),
+                amount_precision: val.amount_precision,
+                onhand_amount: val.onhand_amount.parse().unwrap(),
+                locked_amount: val.locked_amount.parse().unwrap(),
+                // withdrawal_fee: AssetsValueWithdrawalFee::WithdrawalFee(64.64),
+                withdrawal_fee,
+                stop_deposit: val.stop_deposit,
+                stop_withdrawal: val.stop_withdrawal,
             })
         }
         Assets { values }

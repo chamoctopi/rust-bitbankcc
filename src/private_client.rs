@@ -32,15 +32,14 @@ impl Bitbankcc {
         let builder = self.get_private_uri_builder(path);
         let client = reqwest::Client::new();
         let headers = self.get_private_get_request_header(path, "");
-        let resp0 = client
+        let resp = client
             .get(builder.build().unwrap().to_string())
             .headers(headers)
             .send()
+            .await?
+            .json::<AssetsResponse>()
             .await?;
-        println!("hdfsaaaaaaa: {}", resp0.text().await?);
-        // let resp = resp0.json::<AssetsResponse>().await?;
-        // Ok(resp.into())
-        Ok(Assets { values: vec![] })
+        Ok(resp.into())
     }
 
     fn get_private_uri_builder(&self, path: &str) -> uri::Builder {
@@ -51,7 +50,6 @@ impl Bitbankcc {
     }
 
     fn make_private_request_header(&self, nonce: u128, sign: String) -> HeaderMap<HeaderValue> {
-        println!("sign: {}", sign);
         let mut headers = HeaderMap::with_capacity(4);
         headers.insert(
             CONTENT_TYPE,
@@ -69,7 +67,6 @@ impl Bitbankcc {
             "ACCESS-SIGNATURE",
             HeaderValue::from_str(sign.as_str()).unwrap(),
         );
-        println!("headers {:?}", headers);
         headers
     }
 
@@ -78,7 +75,6 @@ impl Bitbankcc {
             .duration_since(UNIX_EPOCH)
             .expect("Time went backwards")
             .as_millis();
-        println!("nonce: {}", nonce);
         let message = nonce.to_string() + &path + &query;
         self.make_private_request_header(nonce, self.create_sign(message))
     }
@@ -93,8 +89,6 @@ impl Bitbankcc {
     }
 
     fn create_sign(&self, message: String) -> String {
-        println!("message: {}", message);
-        println!("secret: {}", self.secret);
         let mut mac = HmacSha256::new_from_slice(self.secret.as_bytes())
             .expect("HMAC can take key of any size");
         mac.update(message.as_bytes());

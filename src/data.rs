@@ -52,7 +52,20 @@ pub struct AssetsValue {
     pub amount_precision: u8,
     pub onhand_amount: f64,
     pub locked_amount: f64,
-    pub withdrawal_fee: f64,
+    pub withdrawal_fee: AssetsValueWithdrawalFee,
     pub stop_deposit: bool,
     pub stop_withdrawal: bool,
+}
+
+#[derive(Debug)]
+pub enum AssetsValueWithdrawalFee {
+    WithdrawalFee(f64),
+    WithdrawalFeeObj(WithdrawalFeeObject),
+}
+
+#[derive(Debug)]
+pub struct WithdrawalFeeObject {
+    pub threshold: f64,
+    pub under: f64,
+    pub over: f64,
 }
