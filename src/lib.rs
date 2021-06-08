@@ -1,10 +1,7 @@
 mod client;
-mod data;
-mod enums;
+mod model;
 mod private_client;
-mod request;
-mod response;
 
-pub use client::*;
-pub use enums::*;
-pub use private_client::*;
+pub use client::PublicClient;
+pub use model::enums::*;
+pub use private_client::Bitbankcc;

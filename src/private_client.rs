@@ -1,7 +1,7 @@
-use super::data::*;
-use super::enums::*;
-use super::request::*;
-use super::response::*;
+use crate::model::enums::*;
+use crate::model::request::*;
+use crate::model::response::*;
+use crate::model::*;
 use hmac::{Hmac, Mac, NewMac};
 use http::uri;
 use http::{header::CONTENT_TYPE, HeaderMap, HeaderValue};
