@@ -21,8 +21,8 @@ impl PublicClient {
 impl PublicClient {
     #[tokio::main]
     pub async fn get_ticker(&self) -> Result<Ticker, Box<dyn std::error::Error>> {
-        let path = format!("/{}/ticker", value_in_currency_pairs(&self.pair));
-        let builder = getPublicUriBuilder(path);
+        let path = format!("/{}/ticker", &self.pair.to_string());
+        let builder = get_public_uri_builder(path);
         let resp = reqwest::get(builder.build().unwrap().to_string())
             .await?
             .json::<TickerResponse>()
@@ -32,8 +32,8 @@ impl PublicClient {
 
     #[tokio::main]
     pub async fn get_depth(&self) -> Result<Depth, Box<dyn std::error::Error>> {
-        let path = format!("/{}/depth", value_in_currency_pairs(&self.pair));
-        let builder = getPublicUriBuilder(path);
+        let path = format!("/{}/depth", &self.pair.to_string());
+        let builder = get_public_uri_builder(path);
         let resp = reqwest::get(builder.build().unwrap().to_string())
             .await?
             .json::<DepthResponse>()
@@ -49,11 +49,11 @@ impl PublicClient {
     ) -> Result<Candlestick, Box<dyn std::error::Error>> {
         let path = format!(
             "/{}/candlestick/{}/{}",
-            value_in_currency_pairs(&self.pair),
-            value_in_candle_types(&r#type),
+            &self.pair.to_string(),
+            &r#type.to_string(),
             YYYMMDD
         );
-        let builder = getPublicUriBuilder(path);
+        let builder = get_public_uri_builder(path);
         let resp = reqwest::get(builder.build().unwrap().to_string())
             .await?
             .json::<CandlestickResponse>()
@@ -62,7 +62,7 @@ impl PublicClient {
     }
 }
 
-fn getPublicUriBuilder(path: String) -> uri::Builder {
+fn get_public_uri_builder(path: String) -> uri::Builder {
     uri::Builder::new()
         .scheme("https")
         .authority(ENDPOINT_PUBLIC)

@@ -161,7 +161,6 @@ impl Into<Assets> for AssetsResponse {
                 amount_precision: val.amount_precision,
                 onhand_amount: val.onhand_amount.parse().unwrap(),
                 locked_amount: val.locked_amount.parse().unwrap(),
-                // withdrawal_fee: AssetsValueWithdrawalFee::WithdrawalFee(64.64),
                 withdrawal_fee,
                 stop_deposit: val.stop_deposit,
                 stop_withdrawal: val.stop_withdrawal,
