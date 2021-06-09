@@ -1,6 +1,7 @@
 use crate::model::enums::*;
 use crate::model::response::*;
 use crate::model::*;
+use crate::MyError;
 use hmac::{Hmac, Mac, NewMac};
 use http::uri;
 use http::{header::CONTENT_TYPE, HeaderMap, HeaderValue};
@@ -119,10 +120,7 @@ impl Bitbankcc {
     */
 
     #[tokio::main]
-    pub async fn get_ticker(
-        &self,
-        pair: CurrencyPair,
-    ) -> Result<Ticker, Box<dyn std::error::Error>> {
+    pub async fn get_ticker(&self, pair: CurrencyPair) -> Result<Ticker, MyError> {
         let path = format!("/{}/ticker", pair);
         let builder = self.get_public_uri_builder(path);
         let client = reqwest::Client::new();
