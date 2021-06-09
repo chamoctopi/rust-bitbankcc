@@ -1,6 +1,5 @@
 use crate::model::depth::*;
 use serde::Deserialize;
-use serde_json::Number;
 
 #[derive(Deserialize)]
 pub struct DepthResponse {

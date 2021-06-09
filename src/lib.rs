@@ -1,5 +1,5 @@
 mod bitbankcc;
 mod model;
 
-pub use bitbankcc::Bitbankcc;
+pub use crate::bitbankcc::Bitbankcc;
 pub use model::enums::*;

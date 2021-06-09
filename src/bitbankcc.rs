@@ -1,13 +1,10 @@
 use crate::model::enums::*;
-use crate::model::request::*;
 use crate::model::response::*;
 use crate::model::*;
 use hmac::{Hmac, Mac, NewMac};
 use http::uri;
 use http::{header::CONTENT_TYPE, HeaderMap, HeaderValue};
-use serde::Deserialize;
 use sha2::Sha256;
-use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 const ENDPOINT_PUBLIC: &str = "public.bitbank.cc";
@@ -163,9 +160,9 @@ impl Bitbankcc {
         &self,
         pair: CurrencyPair,
         r#type: CandleType,
-        YYYMMDD: String,
+        yyyymmdd: String,
     ) -> Result<Candlestick, Box<dyn std::error::Error>> {
-        let path = format!("/{}/candlestick/{}/{}", pair, &r#type, YYYMMDD);
+        let path = format!("/{}/candlestick/{}/{}", pair, &r#type, yyyymmdd);
         let builder = self.get_public_uri_builder(path);
         let client = reqwest::Client::new();
         let headers = self.get_public_request_header();
