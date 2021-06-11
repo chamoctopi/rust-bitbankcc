@@ -1,7 +1,5 @@
-use thiserror::Error;
-
-#[derive(Error, Debug)]
-pub enum MyError {
+#[derive(thiserror::Error, Debug)]
+pub enum Error {
     #[error("failed bb by {0}")]
     Code(i64),
     #[error(transparent)]

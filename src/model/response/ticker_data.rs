@@ -1,6 +1,6 @@
 use crate::model::response::Response;
 use crate::model::ticker::*;
-use crate::MyError;
+use crate::Error;
 use serde::Deserialize;
 use serde_json::Number;
 use std::convert::TryFrom;
@@ -33,7 +33,7 @@ impl Into<Ticker> for TickerData {
 }
 
 impl TryFrom<Response> for TickerData {
-    type Error = MyError;
+    type Error = Error;
 
     fn try_from(resp: Response) -> Result<Self, Self::Error> {
         let code = resp.data.as_object().unwrap().get("code");

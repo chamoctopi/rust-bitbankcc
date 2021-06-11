@@ -1,6 +1,6 @@
 use crate::model::assets::*;
 use crate::model::response::Response;
-use crate::MyError;
+use crate::Error;
 use serde::Deserialize;
 use serde_json::Value;
 use std::convert::TryFrom;
@@ -60,7 +60,7 @@ impl Into<Assets> for AssetsData {
 }
 
 impl TryFrom<Response> for AssetsData {
-    type Error = MyError;
+    type Error = Error;
 
     fn try_from(resp: Response) -> Result<Self, Self::Error> {
         let code = resp.data.as_object().unwrap().get("code");

@@ -1,7 +1,7 @@
 use crate::model::enums::*;
 use crate::model::response::*;
 use crate::model::*;
-use crate::MyError;
+use crate::Error;
 use hmac::{Hmac, Mac, NewMac};
 use http::uri;
 use http::{header::CONTENT_TYPE, HeaderMap, HeaderValue};
@@ -117,7 +117,7 @@ impl Bitbankcc {
     // TODO: doHttpPost
 
     #[tokio::main]
-    async fn get_public_response(&self, path: String) -> Result<Response, MyError> {
+    async fn get_public_response(&self, path: String) -> Result<Response, Error> {
         let builder = self.get_public_uri_builder(path);
         let client = reqwest::Client::new();
         let headers = self.get_public_request_header();
@@ -131,7 +131,7 @@ impl Bitbankcc {
     }
 
     #[tokio::main]
-    async fn get_private_response(&self, path: String) -> Result<Response, MyError> {
+    async fn get_private_response(&self, path: String) -> Result<Response, Error> {
         let builder = self.get_private_uri_builder(path);
         let client = reqwest::Client::new();
         let headers =
@@ -149,13 +149,13 @@ impl Bitbankcc {
         Public API
     */
 
-    pub fn get_ticker(&self, pair: CurrencyPair) -> Result<Ticker, MyError> {
+    pub fn get_ticker(&self, pair: CurrencyPair) -> Result<Ticker, Error> {
         let path = format!("/{}/ticker", pair);
         let resp = self.get_public_response(path)?;
         Ok(TickerData::try_from(resp)?.into())
     }
 
-    pub fn get_depth(&self, pair: CurrencyPair) -> Result<Depth, MyError> {
+    pub fn get_depth(&self, pair: CurrencyPair) -> Result<Depth, Error> {
         let path = format!("/{}/depth", pair);
         let resp = self.get_public_response(path)?;
         Ok(DepthData::try_from(resp)?.into())
@@ -168,7 +168,7 @@ impl Bitbankcc {
         pair: CurrencyPair,
         r#type: CandleType,
         yyyymmdd: &str,
-    ) -> Result<Candlestick, MyError> {
+    ) -> Result<Candlestick, Error> {
         let path = format!("/{}/candlestick/{}/{}", pair, &r#type, yyyymmdd);
         let resp = self.get_public_response(path)?;
         Ok(CandlestickData::try_from(resp)?.into())
@@ -178,7 +178,7 @@ impl Bitbankcc {
         Private API
     */
 
-    pub fn get_assets(&self) -> Result<Assets, MyError> {
+    pub fn get_assets(&self) -> Result<Assets, Error> {
         let path = String::from("/v1/user/assets");
         let resp = self.get_private_response(path)?;
         Ok(AssetsData::try_from(resp)?.into())
