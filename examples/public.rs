@@ -7,11 +7,11 @@ fn main() {
     // dbg!(ticker);
 
     let depth = bb.get_depth(CurrencyPair::BtcJpy);
-    // dbg!(depth);
+    // dbg!(&depth.unwrap().asks[0]);
 
     // TODO: ts = bb.get_transaction(CurrencyPair::BTC_JPY);
     // dbg!(ts);
 
     let cs = bb.get_candlestick(CurrencyPair::BtcJpy, CandleType::_1day, "2017");
-    // dbg!(cs);
+    // dbg!(&cs.unwrap().values[0]);
 }

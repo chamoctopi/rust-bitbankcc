@@ -25,9 +25,9 @@ struct AssetsInnerData {
 impl Into<Assets> for AssetsData {
     fn into(self) -> Assets {
         let mut values: Vec<AssetsValue> = Vec::with_capacity(self.assets.len());
-        for val in &self.assets {
-            let withdrawal_fee = if val.withdrawal_fee.is_object() {
-                let obj = val.withdrawal_fee.as_object().unwrap();
+        for inner in &self.assets {
+            let withdrawal_fee = if inner.withdrawal_fee.is_object() {
+                let obj = inner.withdrawal_fee.as_object().unwrap();
                 AssetsValueWithdrawalFee::WithdrawalFeeObj(WithdrawalFeeObject {
                     threshold: obj
                         .get("threshold")
@@ -41,18 +41,18 @@ impl Into<Assets> for AssetsData {
                 })
             } else {
                 AssetsValueWithdrawalFee::WithdrawalFee(
-                    val.withdrawal_fee.as_str().unwrap().parse().unwrap(),
+                    inner.withdrawal_fee.as_str().unwrap().parse().unwrap(),
                 )
             };
             values.push(AssetsValue {
-                asset: val.asset.as_str().to_string(),
-                free_amount: val.free_amount.parse().unwrap(),
-                amount_precision: val.amount_precision,
-                onhand_amount: val.onhand_amount.parse().unwrap(),
-                locked_amount: val.locked_amount.parse().unwrap(),
+                asset: inner.asset.clone(),
+                free_amount: inner.free_amount.parse().unwrap(),
+                amount_precision: inner.amount_precision,
+                onhand_amount: inner.onhand_amount.parse().unwrap(),
+                locked_amount: inner.locked_amount.parse().unwrap(),
                 withdrawal_fee,
-                stop_deposit: val.stop_deposit,
-                stop_withdrawal: val.stop_withdrawal,
+                stop_deposit: inner.stop_deposit,
+                stop_withdrawal: inner.stop_withdrawal,
             })
         }
         Assets { values }

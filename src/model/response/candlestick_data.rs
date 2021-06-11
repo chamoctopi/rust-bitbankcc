@@ -22,14 +22,14 @@ impl Into<Candlestick> for CandlestickData {
     fn into(self) -> Candlestick {
         let inner = &self.candlestick[0];
         let mut values: Vec<CandlestickValue> = Vec::with_capacity(inner.ohlcv.len());
-        for vals in &inner.ohlcv {
+        for ohlcv in &inner.ohlcv {
             values.push(CandlestickValue {
-                open: vals.0.parse().unwrap(),
-                high: vals.1.parse().unwrap(),
-                low: vals.2.parse().unwrap(),
-                close: vals.3.parse().unwrap(),
-                volume: vals.4.parse().unwrap(),
-                timestamp: vals.5.as_u64().unwrap(),
+                open: ohlcv.0.parse().unwrap(),
+                high: ohlcv.1.parse().unwrap(),
+                low: ohlcv.2.parse().unwrap(),
+                close: ohlcv.3.parse().unwrap(),
+                volume: ohlcv.4.parse().unwrap(),
+                timestamp: ohlcv.5.as_u64().unwrap(),
             })
         }
         Candlestick {

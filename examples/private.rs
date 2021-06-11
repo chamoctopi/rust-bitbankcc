@@ -8,7 +8,7 @@ fn main() {
     );
 
     let assets = bb.get_assets();
-    // dbg!(assets);
+    // dbg!(&assets.unwrap().values[0]);
 
     // TODO: let order = bb.get_order(CurrencyPair::BtcJpy, 90956209);
     // dbg!(order);
