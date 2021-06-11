@@ -202,7 +202,6 @@ impl Bitbankcc {
         amount: f64,
         side: OrderSide,
         r#type: OrderType,
-        post_only: bool,
     ) -> Result<(), Error> {
         todo!()
     }
