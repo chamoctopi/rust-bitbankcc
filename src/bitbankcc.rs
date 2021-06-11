@@ -6,6 +6,7 @@ use hmac::{Hmac, Mac, NewMac};
 use http::uri;
 use http::{header::CONTENT_TYPE, HeaderMap, HeaderValue};
 use sha2::Sha256;
+use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -161,7 +162,9 @@ impl Bitbankcc {
         Ok(DepthData::try_from(resp)?.into())
     }
 
-    // TODO: get_transaction
+    pub fn get_transaction(&self, pair: CurrencyPair, yyyymmdd: &str) -> Result<(), Error> {
+        todo!()
+    }
 
     pub fn get_candlestick(
         &self,
@@ -182,6 +185,57 @@ impl Bitbankcc {
         let path = String::from("/v1/user/assets");
         let resp = self.get_private_response(path)?;
         Ok(AssetsData::try_from(resp)?.into())
+    }
+
+    pub fn get_order(&self, pair: CurrencyPair, order_id: u64) -> Result<(), Error> {
+        todo!()
+    }
+
+    pub fn get_orders(&self, pair: CurrencyPair, order_ids: Vec<u64>) -> Result<(), Error> {
+        todo!()
+    }
+
+    pub fn send_order(
+        &self,
+        pair: CurrencyPair,
+        price: f64,
+        amount: f64,
+        side: OrderSide,
+        r#type: OrderType,
+        post_only: bool,
+    ) -> Result<(), Error> {
+        todo!()
+    }
+
+    pub fn cancel_order(&self, pair: CurrencyPair, order_id: u64) -> Result<(), Error> {
+        todo!()
+    }
+
+    pub fn cancel_orders(&self, pair: CurrencyPair, order_ids: Vec<u64>) -> Result<(), Error> {
+        todo!()
+    }
+
+    pub fn get_active_orders(
+        &self,
+        pair: CurrencyPair,
+        option: HashMap<String, u64>,
+    ) -> Result<(), Error> {
+        todo!()
+    }
+
+    pub fn get_withdrawal_accounts(&self, asset: String) -> Result<(), Error> {
+        todo!()
+    }
+
+    pub fn request_withdraw(
+        &self,
+        asset: String,
+        uuid: String,
+        amount: f64,
+        otp_token: String,
+        sms_token: String,
+    ) -> Result<(), Error> {
+        todo!()
     }
 }
 
