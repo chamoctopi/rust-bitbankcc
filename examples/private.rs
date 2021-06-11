@@ -10,8 +10,8 @@ fn main() {
     let assets = bb.get_assets();
     dbg!(&assets.unwrap().values[0]);
 
-    // TODO: let order = bb.get_order(CurrencyPair::BtcJpy, 90956209);
-    // dbg!(order);
+    let order = bb.get_order(CurrencyPair::BtcJpy, 90956209);
+    dbg!(order);
 
     // TODO: let order = bb.send_order(CurrencyPair::BtcJpy, 10000.0, 0.01, OrderSide::Buy, OrderType::Limit);
     // dbg!(order);
