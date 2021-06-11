@@ -5,7 +5,9 @@ pub enum Error {
     #[error(transparent)]
     RequestError(#[from] reqwest::Error),
     #[error(transparent)]
-    ParseError(#[from] serde_json::Error),
+    JsonParseError(#[from] serde_json::Error),
     #[error(transparent)]
     HttpError(#[from] http::Error),
+    #[error(transparent)]
+    UrlParseError(#[from] url::ParseError),
 }

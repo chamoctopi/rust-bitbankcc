@@ -9,6 +9,7 @@ use sha2::Sha256;
 use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::time::{SystemTime, UNIX_EPOCH};
+use url::Url;
 
 const ENDPOINT_PUBLIC: &str = "public.bitbank.cc";
 const ENDPOINT_PRIVATE: &str = "api.bitbank.cc";
@@ -111,29 +112,21 @@ impl Bitbankcc {
         Ok(client.execute(request).await?.json::<Response>().await?)
     }
 
-    fn do_http_get(
-        &self,
-        builder: uri::Builder,
-        headers: HeaderMap<HeaderValue>,
-    ) -> Result<Response, Error> {
-        let uri = builder.build()?;
+    fn do_http_get(&self, url: Url, headers: HeaderMap<HeaderValue>) -> Result<Response, Error> {
         let client = reqwest::Client::new();
-        let http = client
-            .request(http::Method::GET, uri.to_string())
-            .headers(headers);
+        let http = client.request(http::Method::GET, url).headers(headers);
         self.http_execute(client, http)
     }
 
     fn do_http_post(
         &self,
-        builder: uri::Builder,
+        url: Url,
         headers: HeaderMap<HeaderValue>,
         body: String,
     ) -> Result<Response, Error> {
-        let uri = builder.build()?;
         let client = reqwest::Client::new();
         let http = client
-            .request(http::Method::POST, uri.to_string())
+            .request(http::Method::POST, url)
             .headers(headers)
             .body(body);
         self.http_execute(client, http)
@@ -145,17 +138,19 @@ impl Bitbankcc {
 
     pub fn get_ticker(&self, pair: CurrencyPair) -> Result<Ticker, Error> {
         let path = format!("/{}/ticker", pair);
-        let builder = self.get_public_uri_builder(&path);
+        let uri = self.get_public_uri_builder(&path).build()?;
+        let url = Url::parse(&uri.to_string())?;
         let headers = self.get_public_request_header();
-        let resp = self.do_http_get(builder, headers)?;
+        let resp = self.do_http_get(url, headers)?;
         Ok(TickerData::try_from(resp)?.into())
     }
 
     pub fn get_depth(&self, pair: CurrencyPair) -> Result<Depth, Error> {
         let path = format!("/{}/depth", pair);
-        let builder = self.get_public_uri_builder(&path);
+        let uri = self.get_public_uri_builder(&path).build()?;
+        let url = Url::parse(&uri.to_string())?;
         let headers = self.get_public_request_header();
-        let resp = self.do_http_get(builder, headers)?;
+        let resp = self.do_http_get(url, headers)?;
         Ok(DepthData::try_from(resp)?.into())
     }
 
@@ -170,9 +165,10 @@ impl Bitbankcc {
         yyyymmdd: &str,
     ) -> Result<Candlestick, Error> {
         let path = format!("/{}/candlestick/{}/{}", pair, &r#type, yyyymmdd);
-        let builder = self.get_public_uri_builder(&path);
+        let uri = self.get_public_uri_builder(&path).build()?;
+        let url = Url::parse(&uri.to_string())?;
         let headers = self.get_public_request_header();
-        let resp = self.do_http_get(builder, headers)?;
+        let resp = self.do_http_get(url, headers)?;
         Ok(CandlestickData::try_from(resp)?.into())
     }
 
@@ -181,15 +177,27 @@ impl Bitbankcc {
     */
 
     pub fn get_assets(&self) -> Result<Assets, Error> {
-        let path = String::from("/v1/user/assets");
-        let builder = self.get_private_uri_builder(&path);
-        let headers = self.get_private_get_request_header(&path, "");
-        let resp = self.do_http_get(builder, headers)?;
+        let path = "/v1/user/assets";
+        let uri = self.get_private_uri_builder(path).build()?;
+        let url = Url::parse(&uri.to_string())?;
+        let headers = self.get_private_get_request_header(path, "");
+        let resp = self.do_http_get(url, headers)?;
         Ok(AssetsData::try_from(resp)?.into())
     }
 
     pub fn get_order(&self, pair: CurrencyPair, order_id: u64) -> Result<(), Error> {
-        todo!()
+        let path = "/v1/user/spot/order";
+        let uri = self.get_private_uri_builder(path).build()?;
+        let url = Url::parse_with_params(
+            &uri.to_string(),
+            &[
+                ("pair", pair.to_string()),
+                ("order_id", order_id.to_string()),
+            ],
+        )?;
+        let headers = self.get_private_get_request_header(path, url.query().unwrap());
+        let resp = self.do_http_get(url, headers)?;
+        Ok(())
     }
 
     pub fn get_orders(&self, pair: CurrencyPair, order_ids: Vec<u64>) -> Result<(), Error> {
@@ -204,7 +212,7 @@ impl Bitbankcc {
         side: OrderSide,
         r#type: OrderType,
     ) -> Result<(), Error> {
-        let path = String::from("/v1/user/spot/order");
+        let path = "/v1/user/spot/order";
         todo!()
     }
 
