@@ -14,7 +14,7 @@ pub struct TickerData {
     open: String,
     last: String,
     vol: String,
-    timestamp: Number,
+    timestamp: u64,
 }
 
 impl Into<Ticker> for TickerData {
@@ -27,7 +27,7 @@ impl Into<Ticker> for TickerData {
             open: self.open.parse().unwrap(),
             last: self.last.parse().unwrap(),
             volume: self.vol.parse().unwrap(),
-            timestamp: self.timestamp.as_u64().unwrap(),
+            timestamp: self.timestamp,
         }
     }
 }

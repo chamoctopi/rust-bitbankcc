@@ -104,7 +104,7 @@ impl Bitbankcc {
     // TODO: httpExecute
 
     // TODO
-    // async fn doHttpGet<R, D>(builder: uri::Builder) -> Result<D, Box<dyn std::error::Error>>
+    // async fn doHttpGet<R, D>(builder: uri::Builder) -> Result<D, MyError>
     // where
     //     R: Deserialize,
     //     D: Into<D>,
@@ -116,12 +116,8 @@ impl Bitbankcc {
 
     // TODO: doHttpPost
 
-    /*
-        Public API
-    */
-
     #[tokio::main]
-    async fn get_response(&self, path: String) -> Result<Response, MyError> {
+    async fn get_public_response(&self, path: String) -> Result<Response, MyError> {
         let builder = self.get_public_uri_builder(path);
         let client = reqwest::Client::new();
         let headers = self.get_public_request_header();
@@ -134,69 +130,58 @@ impl Bitbankcc {
             .await?)
     }
 
-    pub fn get_ticker(&self, pair: CurrencyPair) -> Result<Ticker, MyError> {
-        let path = format!("/{}/ticker", pair);
-        let resp = self.get_response(path)?;
-        Ok(TickerData::try_from(resp)?.into())
-    }
-
     #[tokio::main]
-    pub async fn get_depth(&self, pair: CurrencyPair) -> Result<Depth, Box<dyn std::error::Error>> {
-        let path = format!("/{}/depth", pair);
-        let builder = self.get_public_uri_builder(path);
+    async fn get_private_response(&self, path: String) -> Result<Response, MyError> {
+        let builder = self.get_private_uri_builder(path);
         let client = reqwest::Client::new();
-        let headers = self.get_public_request_header();
-        let resp = client
+        let headers =
+            self.get_private_get_request_header("/v1/user/assets".to_string(), "".to_string());
+        Ok(client
             .get(builder.build().unwrap().to_string())
             .headers(headers)
             .send()
             .await?
-            .json::<DepthResponse>()
-            .await?;
-        Ok(resp.into())
+            .json::<Response>()
+            .await?)
+    }
+
+    /*
+        Public API
+    */
+
+    pub fn get_ticker(&self, pair: CurrencyPair) -> Result<Ticker, MyError> {
+        let path = format!("/{}/ticker", pair);
+        let resp = self.get_public_response(path)?;
+        Ok(TickerData::try_from(resp)?.into())
+    }
+
+    pub fn get_depth(&self, pair: CurrencyPair) -> Result<Depth, MyError> {
+        let path = format!("/{}/depth", pair);
+        let resp = self.get_public_response(path)?;
+        Ok(DepthData::try_from(resp)?.into())
     }
 
     // TODO: get_transaction
 
-    #[tokio::main]
-    pub async fn get_candlestick(
+    pub fn get_candlestick(
         &self,
         pair: CurrencyPair,
         r#type: CandleType,
-        yyyymmdd: String,
-    ) -> Result<Candlestick, Box<dyn std::error::Error>> {
+        yyyymmdd: &str,
+    ) -> Result<Candlestick, MyError> {
         let path = format!("/{}/candlestick/{}/{}", pair, &r#type, yyyymmdd);
-        let builder = self.get_public_uri_builder(path);
-        let client = reqwest::Client::new();
-        let headers = self.get_public_request_header();
-        let resp = client
-            .get(builder.build().unwrap().to_string())
-            .headers(headers)
-            .send()
-            .await?
-            .json::<CandlestickResponse>()
-            .await?;
-        Ok(resp.into())
+        let resp = self.get_public_response(path)?;
+        Ok(CandlestickData::try_from(resp)?.into())
     }
 
     /*
         Private API
     */
 
-    #[tokio::main]
-    pub async fn get_assets(&self) -> Result<Assets, Box<dyn std::error::Error>> {
+    pub fn get_assets(&self) -> Result<Assets, MyError> {
         let path = String::from("/v1/user/assets");
-        let builder = self.get_private_uri_builder(path.clone());
-        let client = reqwest::Client::new();
-        let headers = self.get_private_get_request_header(path, "".to_string());
-        let resp = client
-            .get(builder.build().unwrap().to_string())
-            .headers(headers)
-            .send()
-            .await?
-            .json::<AssetsResponse>()
-            .await?;
-        Ok(resp.into())
+        let resp = self.get_private_response(path)?;
+        Ok(AssetsData::try_from(resp)?.into())
     }
 }
 

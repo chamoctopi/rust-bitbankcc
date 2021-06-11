@@ -1,15 +1,12 @@
 use crate::model::assets::*;
+use crate::model::response::Response;
+use crate::MyError;
 use serde::Deserialize;
 use serde_json::Value;
+use std::convert::TryFrom;
 
 #[derive(Deserialize)]
-pub struct AssetsResponse {
-    success: u8,
-    data: AssetsData,
-}
-
-#[derive(Deserialize)]
-struct AssetsData {
+pub struct AssetsData {
     assets: Vec<AssetsInnerData>,
 }
 
@@ -25,11 +22,10 @@ struct AssetsInnerData {
     stop_withdrawal: bool,
 }
 
-impl Into<Assets> for AssetsResponse {
+impl Into<Assets> for AssetsData {
     fn into(self) -> Assets {
-        let data = self.data;
-        let mut values: Vec<AssetsValue> = Vec::with_capacity(data.assets.len());
-        for val in &data.assets {
+        let mut values: Vec<AssetsValue> = Vec::with_capacity(self.assets.len());
+        for val in &self.assets {
             let withdrawal_fee = if val.withdrawal_fee.is_object() {
                 let obj = val.withdrawal_fee.as_object().unwrap();
                 AssetsValueWithdrawalFee::WithdrawalFeeObj(WithdrawalFeeObject {
@@ -60,5 +56,17 @@ impl Into<Assets> for AssetsResponse {
             })
         }
         Assets { values }
+    }
+}
+
+impl TryFrom<Response> for AssetsData {
+    type Error = MyError;
+
+    fn try_from(resp: Response) -> Result<Self, Self::Error> {
+        let code = resp.data.as_object().unwrap().get("code");
+        if code.is_some() {
+            return Err(Self::Error::Code(code.unwrap().as_i64().unwrap()));
+        }
+        Ok(serde_json::from_value::<Self>(resp.data)?)
     }
 }

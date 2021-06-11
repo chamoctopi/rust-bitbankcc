@@ -12,3 +12,4 @@ Cargo.lock
 # Others
 .DS_Store
 .idea
+.envrc
