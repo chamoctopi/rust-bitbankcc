@@ -36,14 +36,14 @@ impl Bitbankcc {
 }
 
 impl Bitbankcc {
-    fn get_public_uri_builder(&self, path: String) -> uri::Builder {
+    fn get_public_uri_builder(&self, path: &str) -> uri::Builder {
         uri::Builder::new()
             .scheme("https")
             .authority(ENDPOINT_PUBLIC)
             .path_and_query(path)
     }
 
-    fn get_private_uri_builder(&self, path: String) -> uri::Builder {
+    fn get_private_uri_builder(&self, path: &str) -> uri::Builder {
         uri::Builder::new()
             .scheme("https")
             .authority(ENDPOINT_PRIVATE)
@@ -80,20 +80,16 @@ impl Bitbankcc {
         headers
     }
 
-    fn get_private_get_request_header(
-        &self,
-        path: String,
-        query: String,
-    ) -> HeaderMap<HeaderValue> {
+    fn get_private_get_request_header(&self, path: &str, query: &str) -> HeaderMap<HeaderValue> {
         let nonce = current_time_millis();
         // FIXME: encode query
-        let message = nonce.to_string() + &path + &query;
+        let message = nonce.to_string() + path + query;
         self.make_private_request_header(nonce, self.create_sign(message))
     }
 
-    fn get_private_post_request_header(&self, json: String) -> HeaderMap<HeaderValue> {
+    fn get_private_post_request_header(&self, json: &str) -> HeaderMap<HeaderValue> {
         let nonce = current_time_millis();
-        let message = nonce.to_string() + &json;
+        let message = nonce.to_string() + json;
         self.make_private_request_header(nonce, self.create_sign(message))
     }
 
@@ -105,48 +101,42 @@ impl Bitbankcc {
         hex::encode(code_bytes)
     }
 
-    // TODO: httpExecute
-
-    // TODO
-    // async fn doHttpGet<R, D>(builder: uri::Builder) -> Result<D, MyError>
-    // where
-    //     R: Deserialize,
-    //     D: Into<D>,
-    // {
-    //     let uri = builder.build().unwrap();
-    //     let resp = reqwest::get(uri.to_string()).await?.json::<R>().await?;
-    //     Ok(resp.into())
-    // }
-
-    // TODO: doHttpPost
-
     #[tokio::main]
-    async fn get_public_response(&self, path: String) -> Result<Response, Error> {
-        let builder = self.get_public_uri_builder(path);
-        let client = reqwest::Client::new();
-        let headers = self.get_public_request_header();
-        Ok(client
-            .get(builder.build().unwrap().to_string())
-            .headers(headers)
-            .send()
-            .await?
-            .json::<Response>()
-            .await?)
+    async fn http_execute(
+        &self,
+        client: reqwest::Client,
+        http: reqwest::RequestBuilder,
+    ) -> Result<Response, Error> {
+        let request = http.build().unwrap();
+        Ok(client.execute(request).await?.json::<Response>().await?)
     }
 
-    #[tokio::main]
-    async fn get_private_response(&self, path: String) -> Result<Response, Error> {
-        let builder = self.get_private_uri_builder(path);
+    fn do_http_get(
+        &self,
+        builder: uri::Builder,
+        headers: HeaderMap<HeaderValue>,
+    ) -> Result<Response, Error> {
+        let uri = builder.build()?;
         let client = reqwest::Client::new();
-        let headers =
-            self.get_private_get_request_header("/v1/user/assets".to_string(), "".to_string());
-        Ok(client
-            .get(builder.build().unwrap().to_string())
+        let http = client
+            .request(http::Method::GET, uri.to_string())
+            .headers(headers);
+        self.http_execute(client, http)
+    }
+
+    fn do_http_post(
+        &self,
+        builder: uri::Builder,
+        headers: HeaderMap<HeaderValue>,
+        body: String,
+    ) -> Result<Response, Error> {
+        let uri = builder.build()?;
+        let client = reqwest::Client::new();
+        let http = client
+            .request(http::Method::POST, uri.to_string())
             .headers(headers)
-            .send()
-            .await?
-            .json::<Response>()
-            .await?)
+            .body(body);
+        self.http_execute(client, http)
     }
 
     /*
@@ -155,13 +145,17 @@ impl Bitbankcc {
 
     pub fn get_ticker(&self, pair: CurrencyPair) -> Result<Ticker, Error> {
         let path = format!("/{}/ticker", pair);
-        let resp = self.get_public_response(path)?;
+        let builder = self.get_public_uri_builder(&path);
+        let headers = self.get_public_request_header();
+        let resp = self.do_http_get(builder, headers)?;
         Ok(TickerData::try_from(resp)?.into())
     }
 
     pub fn get_depth(&self, pair: CurrencyPair) -> Result<Depth, Error> {
         let path = format!("/{}/depth", pair);
-        let resp = self.get_public_response(path)?;
+        let builder = self.get_public_uri_builder(&path);
+        let headers = self.get_public_request_header();
+        let resp = self.do_http_get(builder, headers)?;
         Ok(DepthData::try_from(resp)?.into())
     }
 
@@ -176,7 +170,9 @@ impl Bitbankcc {
         yyyymmdd: &str,
     ) -> Result<Candlestick, Error> {
         let path = format!("/{}/candlestick/{}/{}", pair, &r#type, yyyymmdd);
-        let resp = self.get_public_response(path)?;
+        let builder = self.get_public_uri_builder(&path);
+        let headers = self.get_public_request_header();
+        let resp = self.do_http_get(builder, headers)?;
         Ok(CandlestickData::try_from(resp)?.into())
     }
 
@@ -186,7 +182,9 @@ impl Bitbankcc {
 
     pub fn get_assets(&self) -> Result<Assets, Error> {
         let path = String::from("/v1/user/assets");
-        let resp = self.get_private_response(path)?;
+        let builder = self.get_private_uri_builder(&path);
+        let headers = self.get_private_get_request_header(&path, "");
+        let resp = self.do_http_get(builder, headers)?;
         Ok(AssetsData::try_from(resp)?.into())
     }
 
