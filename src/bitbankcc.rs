@@ -27,8 +27,11 @@ impl Bitbankcc {
             ..Default::default()
         }
     }
-    pub fn with_credentials(key: String, secret: String) -> Bitbankcc {
-        Bitbankcc { key, secret }
+    pub fn with_credentials(api_key: String, api_secret: String) -> Bitbankcc {
+        Bitbankcc {
+            key: api_key,
+            secret: api_secret,
+        }
     }
 }
 
@@ -203,6 +206,7 @@ impl Bitbankcc {
         side: OrderSide,
         r#type: OrderType,
     ) -> Result<(), Error> {
+        let path = String::from("/v1/user/spot/order");
         todo!()
     }
 

@@ -3,8 +3,8 @@ use std::env;
 
 fn main() {
     let bb = bitbankcc::Bitbankcc::with_credentials(
-        env::var("KEY").unwrap(),
-        env::var("SECRET").unwrap(),
+        env::var("API_KEY").unwrap(),
+        env::var("API_SECRET").unwrap(),
     );
 
     let assets = bb.get_assets();
