@@ -6,12 +6,6 @@ use serde_json::Number;
 use std::convert::TryFrom;
 
 #[derive(Deserialize)]
-pub struct TickerResponse {
-    success: u8,
-    data: TickerData,
-}
-
-#[derive(Deserialize)]
 pub struct TickerData {
     sell: String,
     buy: String,

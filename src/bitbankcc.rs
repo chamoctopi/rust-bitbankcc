@@ -121,18 +121,22 @@ impl Bitbankcc {
     */
 
     #[tokio::main]
-    pub async fn get_ticker(&self, pair: CurrencyPair) -> Result<Ticker, MyError> {
-        let path = format!("/{}/ticker", pair);
+    async fn get_response(&self, path: String) -> Result<Response, MyError> {
         let builder = self.get_public_uri_builder(path);
         let client = reqwest::Client::new();
         let headers = self.get_public_request_header();
-        let resp = client
+        Ok(client
             .get(builder.build().unwrap().to_string())
             .headers(headers)
             .send()
             .await?
             .json::<Response>()
-            .await?;
+            .await?)
+    }
+
+    pub fn get_ticker(&self, pair: CurrencyPair) -> Result<Ticker, MyError> {
+        let path = format!("/{}/ticker", pair);
+        let resp = self.get_response(path)?;
         Ok(TickerData::try_from(resp)?.into())
     }
 
