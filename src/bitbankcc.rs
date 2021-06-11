@@ -6,6 +6,7 @@ use hmac::{Hmac, Mac, NewMac};
 use http::uri;
 use http::{header::CONTENT_TYPE, HeaderMap, HeaderValue};
 use sha2::Sha256;
+use std::convert::TryFrom;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 const ENDPOINT_PUBLIC: &str = "public.bitbank.cc";
@@ -130,9 +131,9 @@ impl Bitbankcc {
             .headers(headers)
             .send()
             .await?
-            .json::<TickerResponse>()
+            .json::<Response>()
             .await?;
-        Ok(resp.into())
+        Ok(TickerData::try_from(resp)?.into())
     }
 
     #[tokio::main]

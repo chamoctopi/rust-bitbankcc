@@ -1,6 +1,9 @@
+use crate::model::response::Response;
 use crate::model::ticker::*;
+use crate::MyError;
 use serde::Deserialize;
 use serde_json::Number;
+use std::convert::TryFrom;
 
 #[derive(Deserialize)]
 pub struct TickerResponse {
@@ -9,7 +12,7 @@ pub struct TickerResponse {
 }
 
 #[derive(Deserialize)]
-struct TickerData {
+pub struct TickerData {
     sell: String,
     buy: String,
     high: String,
@@ -20,18 +23,29 @@ struct TickerData {
     timestamp: Number,
 }
 
-impl Into<Ticker> for TickerResponse {
+impl Into<Ticker> for TickerData {
     fn into(self) -> Ticker {
-        let data = self.data;
         Ticker {
-            sell: data.sell.parse().unwrap(),
-            buy: data.buy.parse().unwrap(),
-            high: data.high.parse().unwrap(),
-            low: data.low.parse().unwrap(),
-            open: data.open.parse().unwrap(),
-            last: data.last.parse().unwrap(),
-            volume: data.vol.parse().unwrap(),
-            timestamp: data.timestamp.as_u64().unwrap(),
+            sell: self.sell.parse().unwrap(),
+            buy: self.buy.parse().unwrap(),
+            high: self.high.parse().unwrap(),
+            low: self.low.parse().unwrap(),
+            open: self.open.parse().unwrap(),
+            last: self.last.parse().unwrap(),
+            volume: self.vol.parse().unwrap(),
+            timestamp: self.timestamp.as_u64().unwrap(),
         }
+    }
+}
+
+impl TryFrom<Response> for TickerData {
+    type Error = MyError;
+
+    fn try_from(resp: Response) -> Result<Self, Self::Error> {
+        let code = resp.data.as_object().unwrap().get("code");
+        if code.is_some() {
+            return Err(Self::Error::Code(code.unwrap().as_i64().unwrap()));
+        }
+        Ok(serde_json::from_value::<Self>(resp.data)?)
     }
 }
