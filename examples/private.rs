@@ -1,4 +1,4 @@
-use bitbankcc::{Bitbankcc, CurrencyPair};
+use bitbankcc::CurrencyPair;
 use std::env;
 
 fn main() {

@@ -83,8 +83,12 @@ impl Bitbankcc {
 
     fn get_private_get_request_header(&self, path: &str, query: &str) -> HeaderMap<HeaderValue> {
         let nonce = current_time_millis();
-        // FIXME: encode query
-        let message = nonce.to_string() + path + query;
+        let query_str = if query.len() > 0 {
+            String::from("?") + query
+        } else {
+            String::from("")
+        };
+        let message = nonce.to_string() + path + &query_str;
         self.make_private_request_header(nonce, self.create_sign(message))
     }
 
@@ -185,7 +189,7 @@ impl Bitbankcc {
         Ok(AssetsData::try_from(resp)?.into())
     }
 
-    pub fn get_order(&self, pair: CurrencyPair, order_id: u64) -> Result<(), Error> {
+    pub fn get_order(&self, pair: CurrencyPair, order_id: u64) -> Result<Order, Error> {
         let path = "/v1/user/spot/order";
         let uri = self.get_private_uri_builder(path).build()?;
         let url = Url::parse_with_params(
@@ -197,7 +201,7 @@ impl Bitbankcc {
         )?;
         let headers = self.get_private_get_request_header(path, url.query().unwrap());
         let resp = self.do_http_get(url, headers)?;
-        Ok(())
+        Ok(OrderData::try_from(resp)?.into())
     }
 
     pub fn get_orders(&self, pair: CurrencyPair, order_ids: Vec<u64>) -> Result<(), Error> {

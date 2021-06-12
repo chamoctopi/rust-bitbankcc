@@ -1,4 +1,4 @@
-use crate::{CurrencyPair, OrderSide, OrderType};
+use crate::{CurrencyPair, OrderSide, OrderStatus, OrderType};
 
 #[derive(Debug)]
 pub struct Order {
@@ -14,4 +14,5 @@ pub struct Order {
     pub average_price: f64,
     pub ordered_at: u64,
     pub expire_at: u64,
+    pub status: OrderStatus,
 }

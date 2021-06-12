@@ -2,7 +2,6 @@ use crate::model::response::Response;
 use crate::model::ticker::*;
 use crate::Error;
 use serde::Deserialize;
-use serde_json::Number;
 use std::convert::TryFrom;
 
 #[derive(Deserialize)]
