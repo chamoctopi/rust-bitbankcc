@@ -48,7 +48,7 @@ impl TryFrom<Response> for OrderData {
     fn try_from(resp: Response) -> Result<Self, Self::Error> {
         let code = resp.data.as_object().unwrap().get("code");
         if code.is_some() {
-            return Err(Self::Error::Code(code.unwrap().as_i64().unwrap()));
+            return Err(Error::BitbankError(code.unwrap().as_i64().unwrap()));
         }
         Ok(serde_json::from_value::<Self>(resp.data)?)
     }

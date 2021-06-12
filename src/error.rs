@@ -1,7 +1,7 @@
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
-    #[error("failed bb by {0}")]
-    Code(i64),
+    #[error("bitbank's error code: {0}")]
+    BitbankError(i64),
     #[error(transparent)]
     RequestError(#[from] reqwest::Error),
     #[error(transparent)]
