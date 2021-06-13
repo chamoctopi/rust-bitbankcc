@@ -8,6 +8,7 @@ mod depth;
 mod order;
 mod orders;
 mod ticker;
+mod transactions;
 
 pub use assets::*;
 pub use candlestick::*;
@@ -15,3 +16,4 @@ pub use depth::*;
 pub use order::*;
 pub use orders::*;
 pub use ticker::*;
+pub use transactions::*;

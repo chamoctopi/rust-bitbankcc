@@ -159,8 +159,22 @@ impl Bitbankcc {
         Ok(DepthData::try_from(resp)?.into())
     }
 
-    pub fn get_transaction(&self, pair: CurrencyPair, yyyymmdd: &str) -> Result<(), Error> {
-        todo!()
+    pub fn get_transaction(
+        &self,
+        pair: CurrencyPair,
+        yyyymmdd: &str,
+    ) -> Result<Transactions, Error> {
+        let yyyymmdd_str = if yyyymmdd.len() > 0 {
+            String::from("/") + yyyymmdd
+        } else {
+            String::from("")
+        };
+        let path = format!("/{}/transactions{}", pair, yyyymmdd_str);
+        let uri = self.get_public_uri_builder(&path).build()?;
+        let url = Url::parse(&uri.to_string())?;
+        let headers = self.get_public_request_header();
+        let resp = self.do_http_get(url, headers)?;
+        Ok(TransactionsData::try_from(resp)?.into())
     }
 
     pub fn get_candlestick(
@@ -271,7 +285,7 @@ impl Bitbankcc {
         Ok(OrdersData::try_from(resp)?.into())
     }
 
-    pub fn get_withdrawal_accounts(&self, asset: String) -> Result<(), Error> {
+    pub fn get_withdrawal_accounts(&self, _asset: String) -> Result<(), Error> {
         todo!()
     }
 

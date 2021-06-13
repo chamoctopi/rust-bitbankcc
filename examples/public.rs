@@ -1,17 +1,42 @@
-use bitbankcc::{Bitbankcc, CandleType, CurrencyPair};
+use bitbankcc::{CandleType, CurrencyPair};
 
 fn main() {
     let bb = bitbankcc::Bitbankcc::new();
 
-    let ticker = bb.get_ticker(CurrencyPair::BtcJpy);
-    dbg!(ticker);
+    match bb.get_ticker(CurrencyPair::BtcJpy) {
+        Ok(ticker) => {
+            dbg!(ticker);
+        }
+        Err(err) => {
+            dbg!(err);
+        }
+    }
 
-    let depth = bb.get_depth(CurrencyPair::BtcJpy);
-    dbg!(&depth.unwrap().asks[0]);
+    match bb.get_depth(CurrencyPair::BtcJpy) {
+        Ok(depth) => {
+            dbg!(&depth.asks[0]);
+            dbg!(&depth.bids[0]);
+        }
+        Err(err) => {
+            dbg!(err);
+        }
+    }
 
-    // TODO: ts = bb.get_transaction(CurrencyPair::BTC_JPY);
-    // dbg!(ts);
+    match bb.get_transaction(CurrencyPair::BtcJpy, "") {
+        Ok(ts) => {
+            dbg!(&ts.values[0]);
+        }
+        Err(err) => {
+            dbg!(err);
+        }
+    }
 
-    let cs = bb.get_candlestick(CurrencyPair::BtcJpy, CandleType::_1day, "2017");
-    dbg!(&cs.unwrap().values[0]);
+    match bb.get_candlestick(CurrencyPair::BtcJpy, CandleType::_1day, "2017") {
+        Ok(cs) => {
+            dbg!(&cs.values[0]);
+        }
+        Err(err) => {
+            dbg!(err);
+        }
+    }
 }

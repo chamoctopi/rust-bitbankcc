@@ -1,6 +1,7 @@
 use crate::{CurrencyPair, OrderSide, OrderType};
-use serde::{Serialize, Serializer};
-use serde_with::{serde_as, SerializeAs};
+use serde::Serialize;
+// use serde::{Serialize, Serializer};
+// use serde_with::{serde_as, SerializeAs};
 use std::fmt;
 
 // #[serde_as]
