@@ -258,7 +258,17 @@ impl Bitbankcc {
         pair: CurrencyPair,
         option: HashMap<String, u64>,
     ) -> Result<Orders, Error> {
-        todo!()
+        let path = "/v1/user/spot/active_orders";
+        let uri = self.get_private_uri_builder(path).build()?;
+        let mut params = HashMap::<String, String>::new();
+        params.insert("pair".to_string(), pair.to_string());
+        for (k, v) in option {
+            params.insert(k, v.to_string());
+        }
+        let url = Url::parse_with_params(&uri.to_string(), params)?;
+        let headers = self.get_private_get_request_header(path, url.query().unwrap());
+        let resp = self.do_http_get(url, headers)?;
+        Ok(OrdersData::try_from(resp)?.into())
     }
 
     pub fn get_withdrawal_accounts(&self, asset: String) -> Result<(), Error> {
