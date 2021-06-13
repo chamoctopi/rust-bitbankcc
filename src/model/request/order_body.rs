@@ -3,17 +3,17 @@ use serde::{Serialize, Serializer};
 use serde_with::{serde_as, SerializeAs};
 use std::fmt;
 
-#[serde_as]
+// #[serde_as]
 #[derive(Serialize)]
 pub struct OrderBody {
-    pub pair: CurrencyPair,
+    pair: CurrencyPair,
     // #[serde_as(as = "FloatFromString")]
-    pub amount: f64,
+    amount: f64,
     // #[serde_as(as = "FloatFromString")]
-    pub price: f64,
-    pub side: OrderSide,
-    pub r#type: OrderType,
-    pub post_only: bool,
+    price: f64,
+    side: OrderSide,
+    r#type: OrderType,
+    post_only: bool,
 }
 
 impl OrderBody {
@@ -24,8 +24,8 @@ impl OrderBody {
         side: OrderSide,
         r#type: OrderType,
         post_only: bool,
-    ) -> OrderBody {
-        OrderBody {
+    ) -> Self {
+        Self {
             pair,
             price,
             amount,

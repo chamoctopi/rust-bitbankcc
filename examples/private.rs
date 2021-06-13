@@ -13,18 +13,18 @@ fn main() {
     // let order = bb.get_order(CurrencyPair::BtcJpy, 90956209);
     // dbg!(order);
 
-    let order = bb.send_order(
-        CurrencyPair::BtcJpy,
-        3886555.0,
-        0.01,
-        OrderSide::Buy,
-        OrderType::Limit,
-        false,
-    );
-    dbg!(order);
-
-    // TODO: let order = bb.cancel_order(CurrencyPair::BtcJpy, 129781978);
+    // let order = bb.send_order(
+    //     CurrencyPair::BtcJpy,
+    //     3886555.0,
+    //     0.01,
+    //     OrderSide::Buy,
+    //     OrderType::Limit,
+    //     false,
+    // );
     // dbg!(order);
+
+    let order = bb.cancel_order(CurrencyPair::BtcJpy, 129781978);
+    dbg!(order);
 
     // let ids = vec![129830841, 129830734];
     // TODO: let orders = bb.cancel_orders(CurrencyPair::BtcJpy, ids);

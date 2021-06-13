@@ -1,5 +1,5 @@
 use crate::model::enums::*;
-use crate::model::request::OrderBody;
+use crate::model::request::{CancelBody, OrderBody};
 use crate::model::response::*;
 use crate::model::*;
 use crate::Error;
@@ -227,8 +227,14 @@ impl Bitbankcc {
         Ok(OrderData::try_from(resp)?.into())
     }
 
-    pub fn cancel_order(&self, pair: CurrencyPair, order_id: u64) -> Result<(), Error> {
-        todo!()
+    pub fn cancel_order(&self, pair: CurrencyPair, order_id: u64) -> Result<Order, Error> {
+        let path = "/v1/user/spot/cancel_order";
+        let uri = self.get_private_uri_builder(path).build()?;
+        let url = Url::parse(&uri.to_string())?;
+        let json = CancelBody::new(pair, order_id).to_string();
+        let headers = self.get_private_post_request_header(&json);
+        let resp = self.do_http_post(url, headers, json)?;
+        Ok(OrderData::try_from(resp)?.into())
     }
 
     pub fn cancel_orders(&self, pair: CurrencyPair, order_ids: Vec<u64>) -> Result<(), Error> {
