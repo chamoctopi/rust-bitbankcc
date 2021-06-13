@@ -11,12 +11,12 @@ pub struct OrdersData {
 
 impl Into<Orders> for OrdersData {
     fn into(self) -> Orders {
-        let orders_data = self.orders;
-        let mut orders: Vec<Order> = Vec::with_capacity(orders_data.len());
-        for order_data in orders_data {
-            orders.push(order_data.into());
+        let orders = self.orders;
+        let mut values: Vec<Order> = Vec::with_capacity(orders.len());
+        for order in orders {
+            values.push(order.into());
         }
-        Orders { orders }
+        Orders { values }
     }
 }
 

@@ -285,6 +285,10 @@ impl Bitbankcc {
         Ok(OrdersData::try_from(resp)?.into())
     }
 
+    pub fn get_trade_history() -> Result<(), Error> {
+        todo!()
+    }
+
     pub fn get_withdrawal_accounts(&self, _asset: String) -> Result<(), Error> {
         todo!()
     }
@@ -297,6 +301,14 @@ impl Bitbankcc {
         _otp_token: String,
         _sms_token: String,
     ) -> Result<(), Error> {
+        todo!()
+    }
+
+    pub fn get_exchange_status() -> Result<(), Error> {
+        todo!()
+    }
+
+    pub fn get_all_pairs_info() -> Result<(), Error> {
         todo!()
     }
 }

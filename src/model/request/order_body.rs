@@ -4,6 +4,8 @@ use serde::Serialize;
 // use serde_with::{serde_as, SerializeAs};
 use std::fmt;
 
+// TODO: 注文問題なければコメントアウト削除する
+
 // #[serde_as]
 #[derive(Serialize)]
 pub struct OrderBody {

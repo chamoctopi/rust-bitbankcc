@@ -25,7 +25,7 @@ struct AssetsInnerData {
 impl Into<Assets> for AssetsData {
     fn into(self) -> Assets {
         let mut values: Vec<AssetsValue> = Vec::with_capacity(self.assets.len());
-        for inner in &self.assets {
+        for inner in self.assets {
             let withdrawal_fee = if inner.withdrawal_fee.is_object() {
                 let obj = inner.withdrawal_fee.as_object().unwrap();
                 AssetsValueWithdrawalFee::WithdrawalFeeObj(WithdrawalFeeObject {

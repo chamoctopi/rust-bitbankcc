@@ -21,9 +21,9 @@ pub struct TransactionsInnerData {
 
 impl Into<Transactions> for TransactionsData {
     fn into(self) -> Transactions {
-        let data = self.transactions;
-        let mut values: Vec<TransactionsValue> = Vec::with_capacity(data.len());
-        for dt in data {
+        let inner = self.transactions;
+        let mut values: Vec<TransactionsValue> = Vec::with_capacity(inner.len());
+        for dt in inner {
             values.push(TransactionsValue {
                 transaction_id: dt.transaction_id,
                 side: OrderSide::from_str(&dt.side).unwrap(),

@@ -28,7 +28,7 @@ fn main() {
 
     match bb.send_order(
         CurrencyPair::BtcJpy,
-        3886555.0,
+        3186555.0,
         0.01,
         OrderSide::Buy,
         OrderType::Limit,

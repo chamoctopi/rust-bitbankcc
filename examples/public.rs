@@ -33,6 +33,7 @@ fn main() {
 
     match bb.get_candlestick(CurrencyPair::BtcJpy, CandleType::_1day, "2017") {
         Ok(cs) => {
+            dbg!(&cs.r#type);
             dbg!(&cs.values[0]);
         }
         Err(err) => {
