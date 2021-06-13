@@ -1,4 +1,4 @@
-use bitbankcc::CurrencyPair;
+use bitbankcc::{CurrencyPair, OrderSide, OrderType};
 use std::env;
 
 fn main() {
@@ -7,14 +7,21 @@ fn main() {
         env::var("API_SECRET").unwrap(),
     );
 
-    let assets = bb.get_assets();
-    dbg!(&assets.unwrap().values[0]);
-
-    let order = bb.get_order(CurrencyPair::BtcJpy, 90956209);
-    dbg!(order);
-
-    // TODO: let order = bb.send_order(CurrencyPair::BtcJpy, 10000.0, 0.01, OrderSide::Buy, OrderType::Limit);
+    // let assets = bb.get_assets();
+    // dbg!(&assets.unwrap().values[0]);
+    //
+    // let order = bb.get_order(CurrencyPair::BtcJpy, 90956209);
     // dbg!(order);
+
+    let order = bb.send_order(
+        CurrencyPair::BtcJpy,
+        3886555.0,
+        0.01,
+        OrderSide::Buy,
+        OrderType::Limit,
+        false,
+    );
+    dbg!(order);
 
     // TODO: let order = bb.cancel_order(CurrencyPair::BtcJpy, 129781978);
     // dbg!(order);

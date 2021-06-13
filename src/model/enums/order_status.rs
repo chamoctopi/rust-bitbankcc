@@ -1,7 +1,8 @@
+use serde_with::SerializeDisplay;
 use std::str::FromStr; // DO NOT DELETE: this is used import
 use strum_macros::{Display, EnumString};
 
-#[derive(Debug, Display, EnumString)]
+#[derive(Debug, Display, EnumString, SerializeDisplay)]
 #[strum(serialize_all = "snake_case")]
 pub enum OrderStatus {
     Unfilled,
