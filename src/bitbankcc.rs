@@ -243,15 +243,21 @@ impl Bitbankcc {
         Ok(OrderData::try_from(resp)?.into())
     }
 
-    pub fn cancel_orders(&self, pair: CurrencyPair, order_ids: Vec<u64>) -> Result<(), Error> {
-        todo!()
+    pub fn cancel_orders(&self, pair: CurrencyPair, order_ids: Vec<u64>) -> Result<Orders, Error> {
+        let path = "/v1/user/spot/cancel_orders";
+        let uri = self.get_private_uri_builder(path).build()?;
+        let url = Url::parse(&uri.to_string())?;
+        let json = CancelsBody::new(pair, order_ids).to_string();
+        let headers = self.get_private_post_request_header(&json);
+        let resp = self.do_http_post(url, headers, json)?;
+        Ok(OrdersData::try_from(resp)?.into())
     }
 
     pub fn get_active_orders(
         &self,
         pair: CurrencyPair,
         option: HashMap<String, u64>,
-    ) -> Result<(), Error> {
+    ) -> Result<Orders, Error> {
         todo!()
     }
 

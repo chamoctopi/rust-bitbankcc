@@ -26,13 +26,13 @@ fn main() {
     // let order = bb.cancel_order(CurrencyPair::BtcJpy, 129781978);
     // dbg!(order);
 
-    // let ids = vec![129830841, 129830734];
-    // TODO: let orders = bb.cancel_orders(CurrencyPair::BtcJpy, ids);
-    // dbg!(orders);
-
-    let ids = vec![90956209, 90951996];
-    let orders = bb.get_orders(CurrencyPair::BtcJpy, ids);
+    let ids = vec![129830841, 129830734];
+    let orders = bb.cancel_orders(CurrencyPair::BtcJpy, ids);
     dbg!(orders);
+
+    // let ids = vec![90956209, 90951996];
+    // let orders = bb.get_orders(CurrencyPair::BtcJpy, ids);
+    // dbg!(orders);
 
     // TODO:
     //     Map<String, Long> option = new HashMap<String, Long>();
