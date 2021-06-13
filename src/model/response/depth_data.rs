@@ -1,6 +1,6 @@
 use crate::model::depth::*;
 use crate::model::response::Response;
-use crate::Error;
+use crate::{BitbankError, Error};
 use serde::Deserialize;
 use std::convert::TryFrom;
 
@@ -34,7 +34,9 @@ impl TryFrom<Response> for DepthData {
     fn try_from(resp: Response) -> Result<Self, Self::Error> {
         let code = resp.data.as_object().unwrap().get("code");
         if code.is_some() {
-            return Err(Error::BitbankError(code.unwrap().as_i64().unwrap()));
+            return Err(Error::ApiError(BitbankError::new(
+                code.unwrap().as_i64().unwrap(),
+            )));
         }
         Ok(serde_json::from_value::<Self>(resp.data)?)
     }

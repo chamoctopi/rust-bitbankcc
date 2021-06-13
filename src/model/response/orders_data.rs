@@ -1,6 +1,6 @@
 use crate::model::response::{OrderData, Response};
 use crate::model::{Order, Orders};
-use crate::Error;
+use crate::{BitbankError, Error};
 use serde::Deserialize;
 use std::convert::TryFrom;
 
@@ -26,7 +26,9 @@ impl TryFrom<Response> for OrdersData {
     fn try_from(resp: Response) -> Result<Self, Self::Error> {
         let code = resp.data.as_object().unwrap().get("code");
         if code.is_some() {
-            return Err(Error::BitbankError(code.unwrap().as_i64().unwrap()));
+            return Err(Error::ApiError(BitbankError::new(
+                code.unwrap().as_i64().unwrap(),
+            )));
         }
         Ok(serde_json::from_value::<Self>(resp.data)?)
     }
