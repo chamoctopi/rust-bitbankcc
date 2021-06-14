@@ -5,6 +5,7 @@ mod order_data;
 mod orders_data;
 mod response;
 mod ticker_data;
+mod trade_data;
 mod transactions_data;
 
 pub use assets_data::AssetsData;
@@ -14,4 +15,5 @@ pub use order_data::OrderData;
 pub use orders_data::OrdersData;
 pub use response::Response;
 pub use ticker_data::TickerData;
+pub use trade_data::TradeData;
 pub use transactions_data::TransactionsData;

@@ -74,10 +74,23 @@ fn main() {
     let mut option = HashMap::<String, u64>::new();
     option.insert("count".to_string(), 1);
     option.insert("since".to_string(), 1490348550380);
-    // Option's parameter can be seen https://docs.bitbank.cc/#!/Order/active_orders
+    // Option's parameter can be seen https://github.com/bitbankinc/bitbank-api-docs/blob/master/rest-api.md#fetch-active-orders
     match bb.get_active_orders(CurrencyPair::BtcJpy, option) {
         Ok(orders) => {
             dbg!(orders);
+        }
+        Err(err) => {
+            dbg!(err);
+        }
+    }
+
+    let mut option = HashMap::<String, u64>::new();
+    option.insert("count".to_string(), 1);
+    option.insert("since".to_string(), 1490348550380);
+    // Option's parameter can be seen https://github.com/bitbankinc/bitbank-api-docs/blob/master/rest-api.md#trade
+    match bb.get_trade_history(CurrencyPair::BtcJpy, option) {
+        Ok(trade) => {
+            dbg!(&trade.values[0]);
         }
         Err(err) => {
             dbg!(err);

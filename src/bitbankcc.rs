@@ -275,18 +275,32 @@ impl Bitbankcc {
         let path = "/v1/user/spot/active_orders";
         let uri = self.get_private_uri_builder(path).build()?;
         let mut params = HashMap::<String, String>::new();
-        params.insert("pair".to_string(), pair.to_string());
         for (k, v) in option {
             params.insert(k, v.to_string());
         }
+        params.insert("pair".to_string(), pair.to_string());
         let url = Url::parse_with_params(&uri.to_string(), params)?;
         let headers = self.get_private_get_request_header(path, url.query().unwrap());
         let resp = self.do_http_get(url, headers)?;
         Ok(OrdersData::try_from(resp)?.into())
     }
 
-    pub fn get_trade_history() -> Result<(), Error> {
-        todo!()
+    pub fn get_trade_history(
+        &self,
+        pair: CurrencyPair,
+        option: HashMap<String, u64>,
+    ) -> Result<Trade, Error> {
+        let path = "/v1/user/spot/trade_history";
+        let uri = self.get_private_uri_builder(path).build()?;
+        let mut params = HashMap::<String, String>::new();
+        for (k, v) in option {
+            params.insert(k, v.to_string());
+        }
+        params.insert("pair".to_string(), pair.to_string());
+        let url = Url::parse_with_params(&uri.to_string(), params)?;
+        let headers = self.get_private_get_request_header(path, url.query().unwrap());
+        let resp = self.do_http_get(url, headers)?;
+        Ok(TradeData::try_from(resp)?.into())
     }
 
     pub fn get_withdrawal_accounts(&self, _asset: String) -> Result<(), Error> {
