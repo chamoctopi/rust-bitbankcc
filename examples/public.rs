@@ -40,4 +40,13 @@ fn main() {
             dbg!(err);
         }
     }
+
+    match bb.get_exchange_status() {
+        Ok(status) => {
+            dbg!(&status.values[0]);
+        }
+        Err(err) => {
+            dbg!(err);
+        }
+    }
 }

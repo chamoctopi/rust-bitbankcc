@@ -1,6 +1,7 @@
 mod assets_data;
 mod candlestick_data;
 mod depth_data;
+mod exchange_status_data;
 mod order_data;
 mod orders_data;
 mod response;
@@ -11,6 +12,7 @@ mod transactions_data;
 pub use assets_data::AssetsData;
 pub use candlestick_data::CandlestickData;
 pub use depth_data::DepthData;
+pub use exchange_status_data::ExchangeStatusData;
 pub use order_data::OrderData;
 pub use orders_data::OrdersData;
 pub use response::Response;

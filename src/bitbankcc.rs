@@ -318,8 +318,13 @@ impl Bitbankcc {
         todo!()
     }
 
-    pub fn get_exchange_status() -> Result<(), Error> {
-        todo!()
+    pub fn get_exchange_status(&self) -> Result<ExchangeStatus, Error> {
+        let path = "/v1/spot/status";
+        let uri = self.get_private_uri_builder(&path).build()?;
+        let url = Url::parse(&uri.to_string())?;
+        let headers = self.get_public_request_header();
+        let resp = self.do_http_get(url, headers)?;
+        Ok(ExchangeStatusData::try_from(resp)?.into())
     }
 
     pub fn get_all_pairs_info() -> Result<(), Error> {
