@@ -164,12 +164,12 @@ impl Bitbankcc {
         pair: CurrencyPair,
         yyyymmdd: &str,
     ) -> Result<Transactions, Error> {
-        let yyyymmdd_str = if yyyymmdd.len() > 0 {
+        let yyyymmdd = if yyyymmdd.len() > 0 {
             String::from("/") + yyyymmdd
         } else {
             String::from("")
         };
-        let path = format!("/{}/transactions{}", pair, yyyymmdd_str);
+        let path = format!("/{}/transactions{}", pair, yyyymmdd);
         let uri = self.get_public_uri_builder(&path).build()?;
         let url = Url::parse(&uri.to_string())?;
         let headers = self.get_public_request_header();

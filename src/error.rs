@@ -17,8 +17,8 @@ pub enum Error {
 
 #[derive(Debug)]
 pub struct BitbankError {
-    code: i64,
-    message: &'static str,
+    pub code: i64,
+    pub message: &'static str,
 }
 
 impl BitbankError {
