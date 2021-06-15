@@ -16,17 +16,23 @@ pub enum CandleType {
     _1month,
 }
 
-#[test]
-fn string_to_enum() {
-    matches!(CandleType::from_str("1min").unwrap(), CandleType::_1min,);
-}
+#[cfg(test)]
+mod tests {
+    use crate::CandleType;
+    use std::str::FromStr;
 
-#[test]
-fn enum_to_string() {
-    assert_eq!(CandleType::_1min.to_string(), String::from("1min"));
-}
+    #[test]
+    fn string_to_enum() {
+        matches!(CandleType::from_str("1min").unwrap(), CandleType::_1min,);
+    }
 
-#[test]
-fn display_enum() {
-    assert_eq!(format!("{}", CandleType::_1min), String::from("1min"));
+    #[test]
+    fn enum_to_string() {
+        assert_eq!(CandleType::_1min.to_string(), String::from("1min"));
+    }
+
+    #[test]
+    fn display_enum() {
+        assert_eq!(format!("{}", CandleType::_1min), String::from("1min"));
+    }
 }

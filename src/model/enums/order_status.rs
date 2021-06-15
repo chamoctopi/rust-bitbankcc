@@ -11,26 +11,32 @@ pub enum OrderStatus {
     CanceledPartiallyFilled,
 }
 
-#[test]
-fn string_to_enum() {
-    matches!(
-        OrderStatus::from_str("fully_filled").unwrap(),
-        OrderStatus::FullyFilled,
-    );
-}
+#[cfg(test)]
+mod tests {
+    use crate::OrderStatus;
+    use std::str::FromStr;
 
-#[test]
-fn enum_to_string() {
-    assert_eq!(
-        OrderStatus::FullyFilled.to_string(),
-        String::from("fully_filled")
-    );
-}
+    #[test]
+    fn string_to_enum() {
+        matches!(
+            OrderStatus::from_str("fully_filled").unwrap(),
+            OrderStatus::FullyFilled,
+        );
+    }
 
-#[test]
-fn display_enum() {
-    assert_eq!(
-        format!("{}", OrderStatus::FullyFilled),
-        String::from("fully_filled")
-    );
+    #[test]
+    fn enum_to_string() {
+        assert_eq!(
+            OrderStatus::FullyFilled.to_string(),
+            String::from("fully_filled")
+        );
+    }
+
+    #[test]
+    fn display_enum() {
+        assert_eq!(
+            format!("{}", OrderStatus::FullyFilled),
+            String::from("fully_filled")
+        );
+    }
 }

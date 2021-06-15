@@ -23,20 +23,26 @@ pub enum CurrencyPair {
     BatBtc,
 }
 
-#[test]
-fn string_to_enum() {
-    matches!(
-        CurrencyPair::from_str("btc_jpy").unwrap(),
-        CurrencyPair::BtcJpy,
-    );
-}
+#[cfg(test)]
+mod tests {
+    use crate::CurrencyPair;
+    use std::str::FromStr;
 
-#[test]
-fn enum_to_string() {
-    assert_eq!(CurrencyPair::BtcJpy.to_string(), String::from("btc_jpy"));
-}
+    #[test]
+    fn string_to_enum() {
+        matches!(
+            CurrencyPair::from_str("btc_jpy").unwrap(),
+            CurrencyPair::BtcJpy,
+        );
+    }
 
-#[test]
-fn display_enum() {
-    assert_eq!(format!("{}", CurrencyPair::BtcJpy), String::from("btc_jpy"));
+    #[test]
+    fn enum_to_string() {
+        assert_eq!(CurrencyPair::BtcJpy.to_string(), String::from("btc_jpy"));
+    }
+
+    #[test]
+    fn display_enum() {
+        assert_eq!(format!("{}", CurrencyPair::BtcJpy), String::from("btc_jpy"));
+    }
 }
